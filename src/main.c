@@ -338,6 +338,14 @@ static void check_dfu_mode(void)
     {
       usb_teardown();
     }
+  } else if ( valid_app ) {
+      led_state(STATE_USB_UNMOUNTED);
+      // Set usb_init true to only start USB with CDC mode w/o MSD
+      usb_init(true);
+      // Start bootloader for 5 secs, if no packets received by dfu_startup_timer_handler -> process_dfu_packet
+      // Then boot into app mode
+      bootloader_dfu_start(_ota_dfu, 5000, false);
+      usb_teardown();
   }
 }
 
