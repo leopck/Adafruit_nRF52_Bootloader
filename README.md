@@ -1,3 +1,42 @@
+Self notes:
+
+# Installation
+```
+curl -O -L https://nsscprodmedia.blob.core.windows.net/prod/software-and-other-downloads/desktop-software/nrf-command-line-tools/sw/versions-10-x-x/10-23-0/nrf-command-line-tools_10.23.0_amd64.deb
+sudo dpkg -i nrf-command-line-tools_10.23.0_amd64.deb
+sudo apt install /opt/nrf-command-line-tools/share/JLink_Linux_V788j_x86_64.deb --fix-broken
+```
+
+# Building
+For this step, I'm using GHA to build, the way to build from GHA is to create a release from a commit by creating a tag. 
+
+1. Click on Releases
+2. Click on Draft a new release
+3. Choose a branch
+4. Wait for the build, the build will fail, but the artifacts will be built.
+
+# Flashing Bootloader
+
+Sometimes the micro USB can act up, so make sure the dmesg is showing `/dev/ttyACM0`, otherwise, you need to make sure the plug is plugged at the way into J2 micro USB first or the host PC.
+
+```
+sudo nrfjprog --recover
+sudo nrfjprog --program pca10056_bootloader-0.7.2_s140_6.1.1.hex --chiperase --reset --log --verify
+
+```
+
+# Flashing the application
+
+You need to unplug from J2 to J3 on the board which is also shown as nRF USB. Wait for 5s for the bootloader phase to clear out then it would pop up the MSD file system and you can drag and drop the uf2 images into the nrf.
+
+# Using the device
+
+While remaining on J3 USB, you can then just plug and replug wait for the initial 5s bootloader phase to toggle away then you can use it right away.
+
+# Flashing the keyboard
+
+You need to flash the right and left peripheral first by double clicking at the reset button. Then flash nv-clear.uf2 only if you're changing the keys and perhaps USB dongle? Then flash the right and left peripheral then reset the board once before unplugging then resetting again? Then only you flash the USB dongle, then you can hit a few keys on the board from which the keyboards should pair fairly quickly
+
 # Adafruit nRF52 Bootloader
 
 [![Build Status](https://github.com/adafruit/Adafruit_nRF52_Bootloader/workflows/Build/badge.svg)](https://github.com/adafruit/Adafruit_nRF52_Bootloader/actions)
